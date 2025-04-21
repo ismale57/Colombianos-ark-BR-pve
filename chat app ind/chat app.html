@@ -1,0 +1,2988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Chat Online - ARK Mobile</title>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        /* Reset y variables */
+        :root {
+            --fb-blue: #1877f2;
+            --fb-green: #42b72a;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #8b5cf6;
+            --text-color: #1f2937;
+            --text-muted: #6b7280;
+            --bg-color: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border-color: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius: 0.5rem;
+            --online-color: #10b981;
+            --offline-color: #9ca3af;
+            --notification-color: #ef4444;
+            --danger-color: #dc2626;
+            --ark-color: #00a8ff;
+            --ark-dark: #0097e6;
+            --admin-color: #e84118;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            background-color: #f0f2f5;
+            line-height: 1.5;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        /* Login Page */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .login-container {
+                flex-direction: row;
+                gap: 2rem;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        .login-left {
+            max-width: 500px;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .login-left {
+                margin-bottom: 0;
+            }
+        }
+        
+        .login-logo {
+            color: var(--fb-blue);
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .login-tagline {
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+        
+        .login-form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .login-input {
+            padding: 0.875rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .login-input:focus {
+            outline: none;
+            border-color: var(--fb-blue);
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+        
+        .login-button {
+            background-color: var(--fb-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.875rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .login-button:hover {
+            background-color: #166fe5;
+        }
+        
+        .forgot-password {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .forgot-password a {
+            color: var(--fb-blue);
+            text-decoration: none;
+        }
+        
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        
+        .divider {
+            border-bottom: 1px solid var(--border-color);
+            margin: 1.25rem 0;
+        }
+        
+        .create-account-button {
+            background-color: var(--fb-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 1.125rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            align-self: center;
+        }
+        
+        .create-account-button:hover {
+            background-color: #36a420;
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .login-footer a {
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Registro */
+        .register-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .register-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 432px;
+            position: relative;
+        }
+        
+        .register-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .register-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .register-subtitle {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        
+        .close-button {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        
+        .register-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .register-input {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9375rem;
+        }
+        
+        .register-input:focus {
+            outline: none;
+            border-color: var(--fb-blue);
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+        
+        .register-full {
+            grid-column: 1 / -1;
+        }
+        
+        .register-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+        
+        .register-gender {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .gender-option {
+            flex: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .gender-option input {
+            margin-right: 0.5rem;
+        }
+        
+        .register-terms {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin: 1rem 0;
+        }
+        
+        .register-terms a {
+            color: var(--fb-blue);
+            text-decoration: none;
+        }
+        
+        .register-terms a:hover {
+            text-decoration: underline;
+        }
+        
+        .register-button {
+            background-color: var(--fb-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 1.125rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 50%;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .register-button:hover {
+            background-color: #36a420;
+        }
+        
+        /* Pantalla de Hacker */
+        .hacker-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #000;
+            color: #0f0;
+            z-index: 2000;
+            padding: 2rem;
+            font-family: 'Courier New', monospace;
+            overflow: auto;
+        }
+        
+        .hacker-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hacker-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px #0f0;
+            animation: glitch 1s infinite;
+        }
+        
+        @keyframes glitch {
+            0% {
+                text-shadow: 0 0 10px #0f0;
+            }
+            25% {
+                text-shadow: 0 0 10px #f00;
+            }
+            50% {
+                text-shadow: 0 0 10px #0f0;
+            }
+            75% {
+                text-shadow: 0 0 10px #00f;
+            }
+            100% {
+                text-shadow: 0 0 10px #0f0;
+            }
+        }
+        
+        .hacker-text {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .hacker-warning {
+            color: #f00;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin: 2rem 0;
+            text-align: center;
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+        
+        .hacker-list {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+        
+        .hacker-list li {
+            margin-bottom: 0.75rem;
+        }
+        
+        .hacker-progress {
+            height: 30px;
+            background-color: #111;
+            border: 1px solid #0f0;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .hacker-progress-bar {
+            height: 100%;
+            background-color: #0f0;
+            width: 0%;
+            transition: width 10s linear;
+        }
+        
+        .hacker-progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-weight: bold;
+            mix-blend-mode: difference;
+        }
+        
+        .hacker-button {
+            background-color: #0f0;
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 2rem auto;
+            font-family: 'Courier New', monospace;
+            border-radius: 4px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+            }
+        }
+        
+        .hacker-footer {
+            font-size: 0.875rem;
+            text-align: center;
+            margin-top: 3rem;
+            color: #666;
+        }
+        
+        /* Chat App */
+        .chat-container {
+            display: none; /* Inicialmente oculto */
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+            max-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #6366f1; /* Color púrpura como en la imagen */
+            color: white;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: white;
+        }
+        
+        .logo svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            width: 300px;
+        }
+        
+        .search-container svg {
+            width: 18px;
+            height: 18px;
+            stroke: rgba(255, 255, 255, 0.8);
+            margin-right: 0.5rem;
+        }
+        
+        .search-input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-size: 0.875rem;
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .icon-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: white;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .icon-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: var(--notification-color);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #6366f1;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            grid-column: 1;
+            grid-row: 2;
+            background-color: var(--bg-color);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            color: #6366f1;
+            border-bottom-color: #6366f1;
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: var(--bg-secondary);
+        }
+        
+        .contacts-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+        
+        .contact-item:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        .contact-item.active {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+        
+        .contact-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .contact-avatar.admin {
+            background-color: var(--admin-color);
+        }
+        
+        .status-indicator {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--online-color);
+            border: 2px solid white;
+        }
+        
+        .status-indicator.offline {
+            background-color: var(--offline-color);
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .contact-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .admin-badge {
+            display: inline-block;
+            background-color: var(--admin-color);
+            color: white;
+            font-size: 0.625rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+        
+        .contact-preview {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .contact-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.25rem;
+        }
+        
+        .contact-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .contact-badge {
+            background-color: #6366f1;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            min-width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+        }
+        
+        /* Chat area */
+        .main-content {
+            grid-column: 2;
+            grid-row: 2;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            background-color: var(--bg-secondary);
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+        }
+        
+        .chat-contact {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .chat-contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-contact-name {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+        
+        .chat-contact-status {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        
+        .chat-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            overflow-y: auto;
+            gap: 1rem;
+            background-color: var(--bg-secondary);
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .date-divider {
+            display: flex;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin: 1rem 0;
+        }
+        
+        .date-divider::before,
+        .date-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+        
+        .date-divider::before {
+            margin-right: 1rem;
+        }
+        
+        .date-divider::after {
+            margin-left: 1rem;
+        }
+        
+        .message {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 70%;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.outgoing {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .avatar.admin {
+            background-color: var(--admin-color);
+        }
+        
+        .message.outgoing .avatar {
+            background-color: var(--secondary-color);
+        }
+        
+        .message-content {
+            background-color: var(--bg-color);
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .message.outgoing .message-content {
+            background-color: #6366f1;
+            color: white;
+        }
+        
+        .message-text {
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+        
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .message.outgoing .message-meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .message-time {
+            margin-left: auto;
+        }
+        
+        .message-status {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: 0.5rem;
+        }
+        
+        .message-status svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .message-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            align-self: flex-start;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-muted);
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        /* Input area */
+        .input-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+        }
+        
+        .input-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .input-action {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+        
+        .input-action:hover {
+            background-color: var(--bg-secondary);
+            color: #6366f1;
+        }
+        
+        .message-input-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-secondary);
+            border-radius: 24px;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s;
+        }
+        
+        .message-input-container:focus-within {
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        
+        .message-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.5rem;
+            font-size: 0.9375rem;
+            outline: none;
+        }
+        
+        .send-button {
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .send-button:hover {
+            background-color: #4f46e5;
+        }
+        
+        .send-button svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 2.5;
+        }
+        
+        /* Emoji picker */
+        .emoji-picker {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            background-color: var(--bg-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 320px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .emoji-picker.show {
+            display: block;
+        }
+        
+        .emoji-categories {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .emoji-category {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            border-radius: var(--radius);
+            transition: background-color 0.2s;
+        }
+        
+        .emoji-category:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        .emoji-category.active {
+            background-color: var(--bg-secondary);
+            color: #6366f1;
+        }
+        
+        .emoji-list {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .emoji-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            transition: background-color 0.2s;
+        }
+        
+        .emoji-item:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        /* User dropdown menu */
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 1rem;
+            background-color: var(--bg-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 240px;
+            z-index: 100;
+            overflow: hidden;
+            display: none;
+            border: 1px solid var(--border-color);
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .dropdown-user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dropdown-user-name {
+            font-weight: 600;
+        }
+        
+        .dropdown-user-email {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        .dropdown-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 0.5rem 0;
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            background-color: var(--text-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        /* Theme switcher */
+        .theme-switcher {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background-color: var(--bg-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 50;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .theme-switcher:hover {
+            transform: scale(1.1);
+        }
+        
+        /* ARK Registration Form */
+        .ark-registration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .ark-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .ark-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .ark-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ark-color);
+        }
+        
+        .ark-subtitle {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        
+        .ark-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .ark-logo img {
+            max-width: 200px;
+            height: auto;
+        }
+        
+        .ark-input-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .ark-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        
+        .ark-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+        }
+        
+        .ark-input:focus {
+            outline: none;
+            border-color: var(--ark-color);
+            box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.2);
+        }
+        
+        .ark-checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        
+        .ark-checkbox {
+            margin-right: 0.5rem;
+        }
+        
+        .ark-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .ark-warning-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .ark-warning-text {
+            font-size: 0.875rem;
+        }
+        
+        .ark-button {
+            background-color: var(--ark-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 1.125rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .ark-button:hover {
+            background-color: var(--ark-dark);
+        }
+        
+        /* Soporte y Contacto */
+        .support-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .support-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .support-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .support-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .support-warning {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #f5c6cb;
+        }
+        
+        .support-info {
+            margin: 1.5rem 0;
+        }
+        
+        .support-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .support-item svg {
+            color: var(--primary-color);
+        }
+        
+        .support-item-label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .support-confirm {
+            margin-top: 1.5rem;
+        }
+        
+        .support-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            margin-bottom: 1rem;
+        }
+        
+        .support-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .support-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .support-button-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .support-button-primary:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        .support-button-secondary {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .support-button-secondary:hover {
+            background-color: var(--bg-secondary);
+        }
+        
+        /* Admin Panel */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .admin-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .admin-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--admin-color);
+        }
+        
+        .admin-login {
+            margin: 1.5rem 0;
+        }
+        
+        .admin-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            margin-bottom: 1rem;
+        }
+        
+        .admin-button {
+            background-color: var(--admin-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            font-size: 1.125rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+        }
+        
+        .admin-button:hover {
+            background-color: #c23616;
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .admin-section-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .admin-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            background-color: var(--bg-secondary);
+            border-radius: 4px;
+        }
+        
+        .admin-info-label {
+            font-weight: 500;
+        }
+        
+        .admin-info-value {
+            font-family: monospace;
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        /* Server Rules Modal */
+        .server-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .server-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+        
+        .server-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        
+        .server-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--ark-color);
+        }
+        
+        .server-rules {
+            margin: 1.5rem 0;
+        }
+        
+        .server-rule {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .server-rule-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .server-rule-description {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+        
+        .server-warning {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            border-left: 4px solid #f5c6cb;
+        }
+        
+        .server-warning-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .server-warning-text {
+            font-size: 0.9375rem;
+        }
+        
+        .server-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .server-button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .server-button-accept {
+            background-color: var(--ark-color);
+            color: white;
+            border: none;
+        }
+        
+        .server-button-accept:hover {
+            background-color: var(--ark-dark);
+        }
+        
+        .server-button-reject {
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+        }
+        
+        .server-button-reject:hover {
+            background-color: #b91c1c;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .sidebar.show {
+                display: flex;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                bottom: 0;
+                width: 280px;
+                z-index: 10;
+            }
+            
+            .main-content {
+                grid-column: 1;
+            }
+            
+            .search-container {
+                width: 200px;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+            
+            .ark-form {
+                max-width: 90%;
+            }
+            
+            .support-container,
+            .admin-container,
+            .server-container {
+                max-width: 90%;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .search-container {
+                display: none;
+            }
+            
+            .chat-actions {
+                display: none;
+            }
+        }
+        
+        /* Dark mode */
+        .dark-mode {
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --bg-color: #1f2937;
+            --bg-secondary: #111827;
+            --border-color: #374151;
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary-color: #8b5cf6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Página de inicio de sesión (estilo Facebook) -->
+    <div id="login-page" class="login-container">
+        <div class="login-left">
+            <h1 class="login-logo">facebook</h1>
+            <p class="login-tagline">Facebook te ayuda a comunicarte y compartir con las personas que forman parte de tu vida.</p>
+        </div>
+        
+        <div class="login-form-container">
+            <form id="login-form" class="login-form">
+                <input type="text" id="email" class="login-input" placeholder="Correo electrónico o número de teléfono" required>
+                <input type="password" id="password" class="login-input" placeholder="Contraseña" required>
+                <button type="submit" class="login-button">Iniciar sesión</button>
+                
+                <div class="forgot-password">
+                    <a href="#">¿Olvidaste tu contraseña?</a>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <button type="button" id="create-account-button" class="create-account-button">Crear cuenta nueva</button>
+            </form>
+            
+            <div class="login-footer">
+                <p><a href="#">Crear una página</a> para una celebridad, una marca o un negocio.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Formulario de registro -->
+    <div id="register-container" class="register-container">
+        <div class="register-form">
+            <div class="register-header">
+                <div>
+                    <h2 class="register-title">Registrarte</h2>
+                    <p class="register-subtitle">Es rápido y fácil.</p>
+                </div>
+                <button id="close-register" class="close-button">&times;</button>
+            </div>
+            
+            <form id="register-form">
+                <div class="register-grid">
+                    <input type="text" class="register-input" placeholder="Nombre" required>
+                    <input type="text" class="register-input" placeholder="Apellido" required>
+                </div>
+                
+                <input type="email" class="register-input register-full" placeholder="Número de móvil o correo electrónico" required>
+                <input type="password" class="register-input register-full" placeholder="Contraseña nueva" required>
+                
+                <div class="register-label">Fecha de nacimiento</div>
+                <div class="register-grid">
+                    <select class="register-input">
+                        <option>1</option>
+                        <option>2</option>
+                        <!-- Más opciones -->
+                    </select>
+                    <select class="register-input">
+                        <option>Ene</option>
+                        <option>Feb</option>
+                        <!-- Más opciones -->
+                    </select>
+                    <select class="register-input">
+                        <option>2023</option>
+                        <option>2022</option>
+                        <!-- Más opciones -->
+                    </select>
+                </div>
+                
+                <div class="register-label">Género</div>
+                <div class="register-gender">
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="female">
+                        Mujer
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="male">
+                        Hombre
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="custom">
+                        Personalizado
+                    </label>
+                </div>
+                
+                <div class="register-terms">
+                    Al hacer clic en "Registrarte", aceptas nuestras <a href="#">Condiciones</a>, la <a href="#">Política de privacidad</a> y la <a href="#">Política de cookies</a>.
+                </div>
+                
+                <button type="submit" class="register-button">Registrarte</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Formulario de registro ARK -->
+    <div id="ark-registration" class="ark-registration">
+        <div class="ark-form">
+            <div class="ark-header">
+                <div>
+                    <h2 class="ark-title">Registro ARK Survival</h2>
+                    <p class="ark-subtitle">Servidor Colombiano ARK BR PVE</p>
+                </div>
+                <button id="close-ark" class="close-button">&times;</button>
+            </div>
+            
+            <div class="ark-logo">
+                <img src="https://www.pngmart.com/files/22/ARK-Survival-Evolved-Logo-PNG-HD.png" alt="ARK Survival Evolved">
+            </div>
+            
+            <form id="ark-form">
+                <div class="ark-input-group">
+                    <label class="ark-label" for="ark-name">Nombre en ARK</label>
+                    <input type="text" id="ark-name" class="ark-input" placeholder="Tu nombre en el juego" required>
+                </div>
+                
+                <div class="ark-input-group">
+                    <label class="ark-label" for="ark-tribe">Nombre de la Tribu</label>
+                    <input type="text" id="ark-tribe" class="ark-input" placeholder="Nombre de tu tribu" required>
+                </div>
+                
+                <div class="ark-input-group">
+                    <label class="ark-label" for="ark-members">Número de integrantes</label>
+                    <input type="number" id="ark-members" class="ark-input" min="1" max="50" placeholder="Cantidad de miembros" required>
+                </div>
+                
+                <div class="ark-warning">
+                    <div class="ark-warning-title">
+                        <i data-feather="alert-triangle"></i>
+                        <span>ADVERTENCIA IMPORTANTE</span>
+                    </div>
+                    <p class="ark-warning-text">
+                        Si no sigues las reglas del servidor, te expones a ser hackeado y baneado permanentemente de ARK. 
+                        Además, tu dispositivo puede enfrentar riesgos y daños graves. Los administradores tienen acceso 
+                        completo a tu información y pueden tomar medidas drásticas contra cualquier infracción.
+                    </p>
+                </div>
+                
+                <div class="ark-checkbox-group">
+                    <input type="checkbox" id="ark-rules" class="ark-checkbox" required>
+                    <label for="ark-rules">Acepto seguir todas las reglas del servidor</label>
+                </div>
+                
+                <button type="submit" class="ark-button">Registrarme en el Servidor</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Pantalla de Hacker (Broma) -->
+    <div id="hacker-screen" class="hacker-screen">
+        <div class="hacker-content">
+            <h1 class="hacker-title">¡ALERTA DE SEGURIDAD!</h1>
+            
+            <p class="hacker-text">Se ha detectado una intrusión en su sistema. Un grupo de hackers ha obtenido acceso a su dispositivo y está recopilando información personal.</p>
+            
+            <div class="hacker-warning">¡SU DISPOSITIVO ESTÁ COMPROMETIDO!</div>
+            
+            <p class="hacker-text">Los siguientes datos están siendo extraídos:</p>
+            
+            <ul class="hacker-list">
+                <li>Historial de navegación</li>
+                <li>Contraseñas guardadas</li>
+                <li>Información bancaria</li>
+                <li>Mensajes privados</li>
+                <li>Fotos y videos personales</li>
+            </ul>
+            
+            <p class="hacker-text">Además, se ha detectado la instalación de malware en su sistema que podría permitir:</p>
+            
+            <ul class="hacker-list">
+                <li>Acceso a su cámara</li>
+                <li>Grabación de audio a través del micrófono</li>
+                <li>Keylogging (registro de pulsaciones de teclado)</li>
+                <li>Control remoto de su dispositivo</li>
+            </ul>
+            
+            <div class="hacker-progress">
+                <div id="hacker-progress-bar" class="hacker-progress-bar"></div>
+                <div class="hacker-progress-text">Escaneando sistema: <span id="progress-percent">0</span>%</div>
+            </div>
+            
+            <p class="hacker-text">Estamos realizando un análisis completo de su sistema para identificar todas las vulnerabilidades...</p>
+            
+            <button id="hacker-button" class="hacker-button">ELIMINAR AMENAZAS</button>
+            
+            <div class="hacker-footer">
+                <p>* Hemos accedido a su dispositivo exitosamente</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Soporte y Contacto -->
+    <div id="support-modal" class="support-modal">
+        <div class="support-container">
+            <div class="support-header">
+                <h2 class="support-title">Contacto de Administradores</h2>
+                <button id="close-support" class="close-button">&times;</button>
+            </div>
+            
+            <div class="support-warning">
+                <div class="ark-warning-title">
+                    <i data-feather="alert-triangle"></i>
+                    <span>¡ATENCIÓN!</span>
+                </div>
+                <p>Estás accediendo a datos personales de la administradora y el administrador. Por tu seguridad, confirma tu nombre completo de ARK.</p>
+            </div>
+            
+            <div class="support-info">
+                <div class="support-item">
+                    <i data-feather="phone"></i>
+                    <span class="support-item-label">Teléfono:</span>
+                    <span>+1 445 272 9261</span>
+                </div>
+                
+                <div class="support-item">
+                    <i data-feather="mail"></i>
+                    <span class="support-item-label">Correo:</span>
+                    <span>familycare018@gmail.com</span>
+                </div>
+            </div>
+            
+            <div class="support-confirm">
+                <input type="text" id="ark-name-confirm" class="support-input" placeholder="Ingresa tu nombre completo en ARK">
+                
+                <div class="support-buttons">
+                    <button id="support-cancel" class="support-button support-button-secondary">Cancelar</button>
+                    <button id="support-confirm" class="support-button support-button-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Gestor de Administradores -->
+    <div id="admin-modal" class="admin-modal">
+        <div class="admin-container">
+            <div class="admin-header">
+                <h2 class="admin-title">Gestor de Administradores</h2>
+                <button id="close-admin" class="close-button">&times;</button>
+            </div>
+            
+            <div id="admin-login" class="admin-login">
+                <input type="password" id="admin-password" class="admin-input" placeholder="Ingresa la contraseña de administrador">
+                <button id="admin-login-button" class="admin-button">Acceder</button>
+            </div>
+            
+            <div id="admin-panel" class="admin-panel">
+                <div class="admin-section">
+                    <h3 class="admin-section-title">Información de Administrador</h3>
+                    <div class="admin-info-item">
+                        <span class="admin-info-label">Contraseña de ARK:</span>
+                        <span class="admin-info-value">Valentina57$</span>
+                    </div>
+                </div>
+                
+                <div class="admin-section">
+                    <h3 class="admin-section-title">Opciones</h3>
+                    <button id="server-info-button" class="admin-button" style="margin-bottom: 1rem;">Información del Servidor</button>
+                    <button id="admin-logout-button" class="admin-button" style="background-color: #6c757d;">Cerrar Sesión</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Información del Servidor -->
+    <div id="server-modal" class="server-modal">
+        <div class="server-container">
+            <div class="server-header">
+                <h2 class="server-title">Reglas del Servidor ARK</h2>
+                <button id="close-server" class="close-button">&times;</button>
+            </div>
+            
+            <div class="server-rules">
+                <div class="server-rule">
+                    <div class="server-rule-title">
+                        <i data-feather="check-circle"></i>
+                        <span>Regla 1: Respeto a otros jugadores</span>
+                    </div>
+                    <p class="server-rule-description">No se permite el acoso, insultos o comportamiento tóxico hacia otros jugadores.</p>
+                </div>
+                
+                <div class="server-rule">
+                    <div class="server-rule-title">
+                        <i data-feather="check-circle"></i>
+                        <span>Regla 2: No Griefing</span>
+                    </div>
+                    <p class="server-rule-description">Está prohibido destruir o dañar las construcciones de otros jugadores sin su permiso.</p>
+                </div>
+                
+                <div class="server-rule">
+                    <div class="server-rule-title">
+                        <i data-feather="check-circle"></i>
+                        <span>Regla 3: No matar dinos pasivos</span>
+                    </div>
+                    <p class="server-rule-description">No se permite matar dinosaurios pasivos o domesticados de otros jugadores.</p>
+                </div>
+                
+                <div class="server-rule">
+                    <div class="server-rule-title">
+                        <i data-feather="check-circle"></i>
+                        <span>Regla 4: Límite de construcciones</span>
+                    </div>
+                    <p class="server-rule-description">Cada tribu tiene un límite de estructuras para mantener el rendimiento del servidor.</p>
+                </div>
+            </div>
+            
+            <div class="server-warning">
+                <div class="server-warning-title">
+                    <i data-feather="alert-triangle"></i>
+                    <span>ADVERTENCIA SEVERA</span>
+                </div>
+                <p class="server-warning-text">
+                    El incumplimiento de estas reglas resultará en consecuencias graves. Los administradores tienen la capacidad de acceder a tu dispositivo, 
+                    bloquear tu cuenta de ARK permanentemente y exponer tu información personal. Además, tu dispositivo podría sufrir daños irreversibles 
+                    si se detecta comportamiento malicioso de tu parte.
+                </p>
+            </div>
+            
+            <div class="server-buttons">
+                <button id="server-reject" class="server-button server-button-reject">Rechazar</button>
+                <button id="server-accept" class="server-button server-button-accept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Aplicación de chat (inicialmente oculta) -->
+    <div id="chat-app" class="chat-container">
+        <header class="header">
+            <div class="logo">
+                <i data-feather="message-circle"></i>
+                <span>Chat Online - ARK Mobile</span>
+            </div>
+            
+            <div class="search-container">
+                <i data-feather="search"></i>
+                <input type="text" class="search-input" placeholder="Buscar...">
+            </div>
+            
+            <div class="user-menu">
+                <button class="icon-button" title="Notificaciones">
+                    <i data-feather="bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                
+                <button class="icon-button" title="Configuración">
+                    <i data-feather="settings"></i>
+                </button>
+                
+                <div id="user-avatar" class="user-avatar">U</div>
+            </div>
+        </header>
+        
+        <div id="dropdown-menu" class="dropdown-menu">
+            <div class="dropdown-header">
+                <div class="user-avatar">U</div>
+                <div class="dropdown-user-info">
+                    <div class="dropdown-user-name">Usuario</div>
+                    <div class="dropdown-user-email">usuario@ejemplo.com</div>
+                </div>
+            </div>
+            
+            <a href="#" class="dropdown-item">
+                <i data-feather="user"></i>
+                <span>Mi perfil</span>
+            </a>
+            
+            <a href="#" class="dropdown-item" id="ark-register-button">
+                <i data-feather="shield"></i>
+                <span>Registro ARK Survival</span>
+            </a>
+            
+            <a href="#" class="dropdown-item" id="support-button">
+                <i data-feather="help-circle"></i>
+                <span>Contacto Administradores</span>
+            </a>
+            
+            <a href="#" class="dropdown-item" id="admin-button">
+                <i data-feather="lock"></i>
+                <span>Gestor de Administradores</span>
+            </a>
+            
+            <a href="#" class="dropdown-item" id="server-button">
+                <i data-feather="server"></i>
+                <span>Información del Servidor</span>
+            </a>
+            
+            <a href="#" class="dropdown-item">
+                <i data-feather="settings"></i>
+                <span>Configuración</span>
+            </a>
+            
+            <a href="#" class="dropdown-item">
+                <i data-feather="moon"></i>
+                <span id="theme-toggle-text">Modo oscuro</span>
+            </a>
+            
+            <div class="dropdown-divider"></div>
+            
+            <a href="#" id="logout-button" class="dropdown-item">
+                <i data-feather="log-out"></i>
+                <span>Cerrar sesión</span>
+            </a>
+        </div>
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Chats</h2>
+                <button class="icon-button" title="Nuevo chat">
+                    <i data-feather="edit"></i>
+                </button>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active">Recientes</div>
+                <div class="tab">Contactos</div>
+                <div class="tab">Grupos</div>
+            </div>
+            
+            <div class="contacts-list" id="contacts-list">
+                <!-- Los contactos se generarán dinámicamente con JavaScript -->
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <div class="chat-header">
+                <div class="chat-contact">
+                    <div class="contact-avatar">
+                        <span>A</span>
+                        <span class="status-indicator"></span>
+                    </div>
+                    <div class="chat-contact-info">
+                        <div class="chat-contact-name">Colombiano ARK BR PVE</div>
+                        <div class="chat-contact-status">Canal oficial</div>
+                    </div>
+                </div>
+                
+                <div class="chat-actions">
+                    <button class="icon-button" title="Llamada de voz">
+                        <i data-feather="phone"></i>
+                    </button>
+                    <button class="icon-button" title="Videollamada">
+                        <i data-feather="video"></i>
+                    </button>
+                    <button class="icon-button" title="Información">
+                        <i data-feather="info"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-area" id="chat-area">
+                <!-- Los mensajes se generarán dinámicamente con JavaScript -->
+            </div>
+            
+            <div class="emoji-picker" id="emoji-picker">
+                <div class="emoji-categories">
+                    <div class="emoji-category active">😀</div>
+                    <div class="emoji-category">❤️</div>
+                    <div class="emoji-category">🐶</div>
+                    <div class="emoji-category">🍎</div>
+                    <div class="emoji-category">🏠</div>
+                </div>
+                <div class="emoji-list">
+                    <div class="emoji-item">😀</div>
+                    <div class="emoji-item">😃</div>
+                    <div class="emoji-item">😄</div>
+                    <div class="emoji-item">😁</div>
+                    <div class="emoji-item">😆</div>
+                    <div class="emoji-item">😅</div>
+                    <div class="emoji-item">😂</div>
+                    <div class="emoji-item">🤣</div>
+                    <div class="emoji-item">😊</div>
+                    <div class="emoji-item">😇</div>
+                    <div class="emoji-item">🙂</div>
+                    <div class="emoji-item">🙃</div>
+                    <div class="emoji-item">😉</div>
+                    <div class="emoji-item">😌</div>
+                    <div class="emoji-item">😍</div>
+                    <div class="emoji-item">🥰</div>
+                    <div class="emoji-item">😘</div>
+                    <div class="emoji-item">😗</div>
+                    <div class="emoji-item">😙</div>
+                    <div class="emoji-item">😚</div>
+                    <div class="emoji-item">😋</div>
+                    <div class="emoji-item">😛</div>
+                    <div class="emoji-item">😝</div>
+                    <div class="emoji-item">😜</div>
+                    <div class="emoji-item">🤪</div>
+                    <div class="emoji-item">🤨</div>
+                    <div class="emoji-item">🧐</div>
+                    <div class="emoji-item">🤓</div>
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <div class="input-actions">
+                    <button class="input-action" title="Adjuntar archivo">
+                        <i data-feather="paperclip"></i>
+                    </button>
+                    <button class="input-action" title="Imagen">
+                        <i data-feather="image"></i>
+                    </button>
+                    <button class="input-action" id="emoji-button" title="Emoji">
+                        <i data-feather="smile"></i>
+                    </button>
+                </div>
+                
+                <div class="message-input-container">
+                    <input type="text" id="message-input" class="message-input" placeholder="Escribe un mensaje...">
+                </div>
+                
+                <button id="send-button" class="send-button" title="Enviar">
+                    <i data-feather="send"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+    
+    <div id="toast" class="toast">
+        <span id="toast-message">Notificación</span>
+    </div>
+    
+    <button id="theme-switcher" class="theme-switcher" title="Cambiar tema">
+        <i data-feather="moon"></i>
+    </button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar los iconos de Feather
+            feather.replace();
+            
+            // Elementos del DOM - Login y Registro
+            const loginPage = document.getElementById('login-page');
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const createAccountButton = document.getElementById('create-account-button');
+            const registerContainer = document.getElementById('register-container');
+            const closeRegisterButton = document.getElementById('close-register');
+            const registerForm = document.getElementById('register-form');
+            
+            // Elementos del DOM - Registro ARK
+            const arkRegistration = document.getElementById('ark-registration');
+            const arkRegisterButton = document.getElementById('ark-register-button');
+            const closeArkButton = document.getElementById('close-ark');
+            const arkForm = document.getElementById('ark-form');
+            
+            // Elementos del DOM - Pantalla Hacker
+            const hackerScreen = document.getElementById('hacker-screen');
+            const hackerButton = document.getElementById('hacker-button');
+            const hackerProgressBar = document.getElementById('hacker-progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            
+            // Elementos del DOM - Chat
+            const chatApp = document.getElementById('chat-app');
+            const userAvatar = document.getElementById('user-avatar');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const logoutButton = document.getElementById('logout-button');
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const chatArea = document.getElementById('chat-area');
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const contactsList = document.getElementById('contacts-list');
+            const emojiPicker = document.getElementById('emoji-picker');
+            const emojiButton = document.getElementById('emoji-button');
+            const emojiItems = document.querySelectorAll('.emoji-item');
+            const themeSwitcher = document.getElementById('theme-switcher');
+            const themeToggleText = document.getElementById('theme-toggle-text');
+            
+            // Elementos del DOM - Soporte y Contacto
+            const supportModal = document.getElementById('support-modal');
+            const supportButton = document.getElementById('support-button');
+            const closeSupportButton = document.getElementById('close-support');
+            const supportConfirmButton = document.getElementById('support-confirm');
+            const supportCancelButton = document.getElementById('support-cancel');
+            const arkNameConfirmInput = document.getElementById('ark-name-confirm');
+            
+            // Elementos del DOM - Gestor de Administradores
+            const adminModal = document.getElementById('admin-modal');
+            const adminButton = document.getElementById('admin-button');
+            const closeAdminButton = document.getElementById('close-admin');
+            const adminLoginButton = document.getElementById('admin-login-button');
+            const adminLogoutButton = document.getElementById('admin-logout-button');
+            const adminPasswordInput = document.getElementById('admin-password');
+            const adminLogin = document.getElementById('admin-login');
+            const adminPanel = document.getElementById('admin-panel');
+            
+            // Elementos del DOM - Información del Servidor
+            const serverModal = document.getElementById('server-modal');
+            const serverButton = document.getElementById('server-button');
+            const serverInfoButton = document.getElementById('server-info-button');
+            const closeServerButton = document.getElementById('close-server');
+            const serverAcceptButton = document.getElementById('server-accept');
+            const serverRejectButton = document.getElementById('server-reject');
+            
+            // Verificar si el usuario ya ha iniciado sesión (simulado con localStorage)
+            // IMPORTANTE: Comentamos esta parte para asegurar que siempre empiece en la pantalla de login
+            // const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            // const userName = localStorage.getItem('userName') || '';
+            
+            // Forzar que siempre empiece en la pantalla de login
+            localStorage.removeItem('isLoggedIn');
+            
+            // Aplicar modo oscuro si estaba activado
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                themeSwitcher.innerHTML = '<i data-feather="sun"></i>';
+                themeToggleText.textContent = 'Modo claro';
+                feather.replace();
+            }
+            
+            // Datos de ejemplo para contactos
+            const contacts = [
+                {
+                    id: 1,
+                    name: 'Colombiano ARK BR PVE',
+                    avatar: 'A',
+                    preview: 'Bienvenidos al servidor oficial',
+                    time: '12:30',
+                    unread: 2,
+                    online: true,
+                    isGroup: true
+                },
+                {
+                    id: 2,
+                    name: 'Ismael Narvaez',
+                    avatar: 'I',
+                    preview: 'Recuerden seguir las reglas del servidor',
+                    time: '10:15',
+                    unread: 0,
+                    online: true,
+                    isAdmin: true
+                },
+                {
+                    id: 3,
+                    name: 'Laura Valentina',
+                    avatar: 'L',
+                    preview: 'Evento de dinos este fin de semana',
+                    time: 'Ayer',
+                    unread: 0,
+                    online: true,
+                    isAdmin: true
+                },
+                {
+                    id: 4,
+                    name: 'Carlos Rodríguez',
+                    avatar: 'C',
+                    preview: '¿Alguien tiene metal extra?',
+                    time: 'Ayer',
+                    unread: 1,
+                    online: false
+                },
+                {
+                    id: 5,
+                    name: 'Sofía López',
+                    avatar: 'S',
+                    preview: 'Acabo de encontrar un Rex nivel 150',
+                    time: 'Lun',
+                    unread: 0,
+                    online: true
+                }
+            ];
+            
+            // Datos de ejemplo para mensajes del grupo ARK
+            const arkMessages = [
+                {
+                    id: 1,
+                    sender: 'Ismael Narvaez',
+                    avatar: 'I',
+                    text: '¡Bienvenidos al chat oficial del servidor Colombiano ARK BR PVE!',
+                    time: '12:00',
+                    outgoing: false,
+                    isAdmin: true
+                },
+                {
+                    id: 2,
+                    sender: 'Laura Valentina',
+                    avatar: 'L',
+                    text: 'Recuerden registrarse en la sección "Registro ARK Survival" para poder jugar en el servidor.',
+                    time: '12:05',
+                    outgoing: false,
+                    isAdmin: true
+                },
+                {
+                    id: 3,
+                    sender: 'Ismael Narvaez',
+                    avatar: 'I',
+                    text: 'Las reglas del servidor son: No griefing, no matar dinos pasivos, respetar las bases de otros jugadores.',
+                    time: '12:10',
+                    outgoing: false,
+                    isAdmin: true
+                },
+                {
+                    id: 4,
+                    sender: 'Carlos Rodríguez',
+                    avatar: 'C',
+                    text: '¿Cuándo será el próximo evento?',
+                    time: '12:15',
+                    outgoing: false
+                },
+                {
+                    id: 5,
+                    sender: 'Laura Valentina',
+                    avatar: 'L',
+                    text: 'Este fin de semana tendremos un evento de caza de dinos. Habrá premios para los que capturen los dinos más raros.',
+                    time: '12:20',
+                    outgoing: false,
+                    isAdmin: true
+                }
+            ];
+            
+            // Función para mostrar la pantalla de hacker
+            function showHackerScreen() {
+                loginPage.style.display = 'none';
+                registerContainer.style.display = 'none';
+                arkRegistration.style.display = 'none';
+                hackerScreen.style.display = 'block';
+                
+                // Iniciar la barra de progreso
+                setTimeout(() => {
+                    hackerProgressBar.style.width = '100%';
+                    
+                    // Actualizar el porcentaje
+                    let percent = 0;
+                    const interval = setInterval(() => {
+                        percent += 1;
+                        progressPercent.textContent = percent;
+                        
+                        if (percent >= 100) {
+                            clearInterval(interval);
+                        }
+                    }, 100);
+                }, 500);
+            }
+            
+            // Función para mostrar la aplicación de chat
+            function showChatApp(userName) {
+                loginPage.style.display = 'none';
+                registerContainer.style.display = 'none';
+                hackerScreen.style.display = 'none';
+                arkRegistration.style.display = 'none';
+                supportModal.style.display = 'none';
+                adminModal.style.display = 'none';
+                serverModal.style.display = 'none';
+                chatApp.style.display = 'grid';
+                
+                // Actualizar avatar con la inicial del nombre de usuario
+                if (userName) {
+                    userAvatar.textContent = userName.charAt(0).toUpperCase();
+                    document.querySelector('.dropdown-user-name').textContent = userName;
+                    document.querySelector('.dropdown-user-email').textContent = `${userName.toLowerCase()}@ejemplo.com`;
+                }
+                
+                // Cargar contactos
+                renderContacts();
+                
+                // Cargar mensajes del grupo ARK
+                renderArkMessages();
+                
+                // Guardar esta sesión
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userName', userName);
+                
+                // Reinicializar los iconos después de mostrar el chat
+                feather.replace();
+            }
+            
+            // Función para renderizar contactos
+            function renderContacts() {
+                contactsList.innerHTML = '';
+                
+                contacts.forEach(contact => {
+                    const contactItem = document.createElement('div');
+                    contactItem.className = 'contact-item';
+                    contactItem.dataset.id = contact.id;
+                    
+                    if (contact.id === 1) {
+                        contactItem.classList.add('active');
+                    }
+                    
+                    const avatarClass = contact.isAdmin ? 'contact-avatar admin' : 'contact-avatar';
+                    const adminBadge = contact.isAdmin ? '<span class="admin-badge">ADMIN</span>' : '';
+                    
+                    contactItem.innerHTML = `
+                        <div class="${avatarClass}">
+                            <span>${contact.avatar}</span>
+                            <span class="status-indicator ${contact.online ? '' : 'offline'}"></span>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">${contact.name}${adminBadge}</div>
+                            <div class="contact-preview">${contact.preview}</div>
+                        </div>
+                        <div class="contact-meta">
+                            <div class="contact-time">${contact.time}</div>
+                            ${contact.unread > 0 ? `<div class="contact-badge">${contact.unread}</div>` : ''}
+                        </div>
+                    `;
+                    
+                    contactItem.addEventListener('click', function() {
+                        document.querySelectorAll('.contact-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        // Actualizar encabezado del chat
+                        document.querySelector('.chat-contact-name').textContent = contact.name;
+                        document.querySelector('.contact-avatar span').textContent = contact.avatar;
+                        document.querySelector('.chat-contact .status-indicator').className = 
+                            `status-indicator ${contact.online ? '' : 'offline'}`;
+                        
+                        if (contact.isGroup) {
+                            document.querySelector('.chat-contact-status').textContent = 'Canal oficial';
+                            renderArkMessages();
+                        } else if (contact.isAdmin) {
+                            document.querySelector('.chat-contact-status').textContent = 'Administrador';
+                            // Aquí podrías cargar mensajes específicos para admins
+                            renderEmptyChat();
+                        } else {
+                            document.querySelector('.chat-contact-status').textContent = 
+                                contact.online ? 'En línea' : 'Desconectado';
+                            // Aquí podrías cargar mensajes específicos para este contacto
+                            renderEmptyChat();
+                        }
+                        
+                        // Actualizar clase de avatar si es admin
+                        if (contact.isAdmin) {
+                            document.querySelector('.chat-contact .contact-avatar').classList.add('admin');
+                        } else {
+                            document.querySelector('.chat-contact .contact-avatar').classList.remove('admin');
+                        }
+                    });
+                    
+                    contactsList.appendChild(contactItem);
+                });
+            }
+            
+            // Función para renderizar mensajes del grupo ARK
+            function renderArkMessages() {
+                chatArea.innerHTML = '';
+                
+                // Añadir divisor de fecha
+                const dateDivider = document.createElement('div');
+                dateDivider.className = 'date-divider';
+                dateDivider.textContent = 'Hoy';
+                chatArea.appendChild(dateDivider);
+                
+                // Añadir mensajes
+                arkMessages.forEach(message => {
+                    addMessageToChat(
+                        message.text, 
+                        message.outgoing, 
+                        message.sender, 
+                        message.avatar, 
+                        message.time,
+                        message.isAdmin
+                    );
+                });
+                
+                // Scroll al final del chat
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+            
+            // Función para renderizar un chat vacío
+            function renderEmptyChat() {
+                chatArea.innerHTML = '';
+                
+                // Añadir divisor de fecha
+                const dateDivider = document.createElement('div');
+                dateDivider.className = 'date-divider';
+                dateDivider.textContent = 'Hoy';
+                chatArea.appendChild(dateDivider);
+                
+                // Mensaje de bienvenida
+                const welcomeMessage = document.createElement('div');
+                welcomeMessage.className = 'message';
+                welcomeMessage.innerHTML = `
+                    <div class="avatar">S</div>
+                    <div class="message-content">
+                        <div class="message-text">Inicia una conversación con este contacto.</div>
+                        <div class="message-meta">
+                            <span class="message-time">${getCurrentTime()}</span>
+                        </div>
+                    </div>
+                `;
+                
+                chatArea.appendChild(welcomeMessage);
+                
+                // Scroll al final del chat
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+            
+            // Función para añadir un mensaje al chat
+            function addMessageToChat(text, isOutgoing = true, sender = 'Usuario', avatar = 'U', time = getCurrentTime(), isAdmin = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isOutgoing ? 'outgoing' : ''}`;
+                
+                const avatarClass = isAdmin ? 'avatar admin' : 'avatar';
+                const adminBadge = isAdmin ? '<span class="admin-badge">ADMIN</span>' : '';
+                
+                messageDiv.innerHTML = `
+                    <div class="${avatarClass}">${avatar}</div>
+                    <div class="message-content">
+                        <div class="message-text">${text}</div>
+                        <div class="message-meta">
+                            <span>${sender}${adminBadge}</span>
+                            <span class="message-time">${time}</span>
+                            ${isOutgoing ? `
+                                <span class="message-status">
+                                    <i data-feather="check-circle"></i>
+                                </span>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                chatArea.appendChild(messageDiv);
+                feather.replace();
+                
+                // Scroll al final del chat
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+            
+            // Función para obtener la hora actual
+            function getCurrentTime() {
+                const now = new Date();
+                return now.getHours() + ':' + now.getMinutes().toString().padStart(2, '0');
+            }
+            
+            // Función para mostrar notificaciones toast
+            function showToast(message, duration = 3000) {
+                toastMessage.textContent = message;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, duration);
+            }
+            
+            // Función para enviar un mensaje
+            function sendMessage() {
+                const text = messageInput.value.trim();
+                
+                if (text) {
+                    // Añadir mensaje del usuario
+                    addMessageToChat(text, true);
+                    messageInput.value = '';
+                    
+                    // Mostrar indicador de escritura
+                    setTimeout(() => {
+                        const typingIndicator = document.createElement('div');
+                        typingIndicator.className = 'typing-indicator';
+                        typingIndicator.innerHTML = `
+                            <div class="avatar admin">I</div>
+                            <span>Ismael está escribiendo</span>
+                            <div class="typing-dots">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                        `;
+                        chatArea.appendChild(typingIndicator);
+                        chatArea.scrollTop = chatArea.scrollHeight;
+                        
+                        // Simular respuesta automática después de 2 segundos
+                        setTimeout(() => {
+                            // Eliminar indicador de escritura
+                            typingIndicator.remove();
+                            
+                            // Respuestas posibles
+                            const responses = [
+                                "Gracias por tu mensaje. Recuerda seguir las reglas del servidor.",
+                                "Entendido. ¿Necesitas ayuda con algo más del servidor?",
+                                "Interesante, lo discutiré con los otros administradores.",
+                                "Por favor, asegúrate de registrarte correctamente en la sección de Registro ARK.",
+                                "Este fin de semana tendremos un evento especial, no te lo pierdas.",
+                                "Recuerda que está prohibido el griefing en el servidor."
+                            ];
+                            
+                            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                            addMessageToChat(randomResponse, false, 'Ismael Narvaez', 'I', getCurrentTime(), true);
+                        }, 2000);
+                    }, 500);
+                }
+            }
+            
+            // Función para cerrar sesión
+            function logout() {
+                localStorage.removeItem('isLoggedIn');
+                
+                // Limpiar campos de formulario
+                emailInput.value = '';
+                passwordInput.value = '';
+                
+                // Mostrar página de inicio de sesión
+                chatApp.style.display = 'none';
+                loginPage.style.display = 'flex';
+                
+                // Ocultar menú desplegable
+                dropdownMenu.classList.remove('show');
+            }
+            
+            // Función para cambiar el tema
+            function toggleTheme() {
+                const isDarkMode = document.body.classList.toggle('dark-mode');
+                
+                if (isDarkMode) {
+                    themeSwitcher.innerHTML = '<i data-feather="sun"></i>';
+                    themeToggleText.textContent = 'Modo claro';
+                } else {
+                    themeSwitcher.innerHTML = '<i data-feather="moon"></i>';
+                    themeToggleText.textContent = 'Modo oscuro';
+                }
+                
+                localStorage.setItem('darkMode', isDarkMode);
+                feather.replace();
+            }
+            
+            // Event listeners - Login y Registro
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                if (email && password) {
+                    // Extraer nombre de usuario del email (simulado)
+                    const userName = email.split('@')[0];
+                    
+                    // Mostrar pantalla de hacker
+                    showToast('Iniciando sesión...');
+                    setTimeout(() => {
+                        showHackerScreen();
+                    }, 1000);
+                }
+            });
+            
+            createAccountButton.addEventListener('click', function() {
+                registerContainer.style.display = 'flex';
+            });
+            
+            closeRegisterButton.addEventListener('click', function() {
+                registerContainer.style.display = 'none';
+            });
+            
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Mostrar pantalla de hacker
+                showToast('Creando cuenta...');
+                setTimeout(() => {
+                    showHackerScreen();
+                }, 1000);
+            });
+            
+            // Event listeners - Registro ARK
+            arkRegisterButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                arkRegistration.style.display = 'flex';
+                dropdownMenu.classList.remove('show');
+            });
+            
+            closeArkButton.addEventListener('click', function() {
+                arkRegistration.style.display = 'none';
+            });
+            
+            arkForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Mostrar advertencia
+                showToast('Registrando en el servidor ARK...');
+                setTimeout(() => {
+                    showToast('¡Registro completado! Recuerda seguir las reglas del servidor.');
+                    arkRegistration.style.display = 'none';
+                }, 2000);
+            });
+            
+            // Event listener - Pantalla Hacker
+            hackerButton.addEventListener('click', function() {
+                showToast('Eliminando amenazas...');
+                setTimeout(() => {
+                    // Extraer nombre de usuario del email (simulado)
+                    const userName = emailInput.value.trim().split('@')[0] || 'Usuario';
+                    
+                    // Mostrar aplicación de chat
+                    showChatApp(userName);
+                }, 2000);
+            });
+            
+            // Event listeners - Soporte y Contacto
+            supportButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                supportModal.style.display = 'flex';
+                dropdownMenu.classList.remove('show');
+            });
+            
+            closeSupportButton.addEventListener('click', function() {
+                supportModal.style.display = 'none';
+            });
+            
+            supportConfirmButton.addEventListener('click', function() {
+                const arkName = arkNameConfirmInput.value.trim();
+                if (arkName) {
+                    showToast('Acceso concedido. Gracias por confirmar tu identidad.');
+                    supportModal.style.display = 'none';
+                } else {
+                    showToast('Por favor, ingresa tu nombre completo de ARK.');
+                }
+            });
+            
+            supportCancelButton.addEventListener('click', function() {
+                supportModal.style.display = 'none';
+            });
+            
+            // Event listeners - Gestor de Administradores
+            adminButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                adminModal.style.display = 'flex';
+                adminLogin.style.display = 'block';
+                adminPanel.style.display = 'none';
+                adminPasswordInput.value = '';
+                dropdownMenu.classList.remove('show');
+            });
+            
+            closeAdminButton.addEventListener('click', function() {
+                adminModal.style.display = 'none';
+            });
+            
+            adminLoginButton.addEventListener('click', function() {
+                const password = adminPasswordInput.value.trim();
+                if (password === 'Cosita00!') {
+                    adminLogin.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    showToast('Acceso concedido. Bienvenido al panel de administración.');
+                } else {
+                    showToast('Contraseña incorrecta. Intenta de nuevo.');
+                }
+            });
+            
+            adminLogoutButton.addEventListener('click', function() {
+                adminLogin.style.display = 'block';
+                adminPanel.style.display = 'none';
+                adminPasswordInput.value = '';
+            });
+            
+            // Event listeners - Información del Servidor
+            serverButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                serverModal.style.display = 'flex';
+                dropdownMenu.classList.remove('show');
+            });
+            
+            serverInfoButton && serverInfoButton.addEventListener('click', function() {
+                serverModal.style.display = 'flex';
+                adminModal.style.display = 'none';
+            });
+            
+            closeServerButton.addEventListener('click', function() {
+                serverModal.style.display = 'none';
+            });
+            
+            serverAcceptButton.addEventListener('click', function() {
+                showToast('Has aceptado las reglas del servidor. ¡Bienvenido!');
+                serverModal.style.display = 'none';
+            });
+            
+            serverRejectButton.addEventListener('click', function() {
+                showToast('Debes aceptar las reglas para acceder al servidor.');
+            });
+            
+            // Event listeners - Chat
+            userAvatar.addEventListener('click', function() {
+                dropdownMenu.classList.toggle('show');
+            });
+            
+            // Cerrar menú desplegable al hacer clic fuera de él
+            document.addEventListener('click', function(e) {
+                if (!userAvatar.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+                
+                if (!emojiButton.contains(e.target) && !emojiPicker.contains(e.target)) {
+                    emojiPicker.classList.remove('show');
+                }
+            });
+            
+            // Emoji picker
+            emojiButton.addEventListener('click', function() {
+                emojiPicker.classList.toggle('show');
+            });
+            
+            emojiItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    messageInput.value += this.textContent;
+                    messageInput.focus();
+                });
+            });
+            
+            // Tema
+            themeSwitcher.addEventListener('click', toggleTheme);
+            document.querySelector('.dropdown-item:nth-child(7)').addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleTheme();
+            });
+            
+            // Logout
+            logoutButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                showToast('Cerrando sesión...');
+                setTimeout(() => {
+                    logout();
+                }, 1000);
+            });
+            
+            // Enviar mensaje
+            sendButton.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
